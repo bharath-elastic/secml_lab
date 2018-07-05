@@ -1,0 +1,4344 @@
+{
+  "index_patterns": [
+    "security-analytics-packetbeat-*"
+  ],
+  "order": 0,
+  "settings": {
+    "index": {
+      "mapping": {
+        "total_fields": {
+          "limit": "10000"
+        }
+      },
+      "analysis": {
+        "analyzer": {
+          "domain_analyzer": {
+            "filter": [
+              "lowercase"
+            ],
+            "tokenizer": "domain_tokenizer"
+          },
+          "my_http_analyzer": {
+            "lowercase": "true",
+            "pattern": "\\W",
+            "type": "pattern"
+          }
+        },
+        "tokenizer": {
+          "domain_tokenizer": {
+            "pattern": "\\.",
+            "type": "simple_pattern_split"
+          }
+        }
+      },
+      "refresh_interval": "5s",
+      "number_of_shards": "1",
+      "number_of_replicas": "0",
+      "query.default_field":[
+          "_all_",
+          "highest_registered_domain",
+          "highest_registered_domain.components",
+          "subdomain",
+          "threat.comment",
+          "threat.description",
+          "client_ip",
+          "client_server",
+          "dest.ip",
+          "dest.ipv6",
+          "dest.mac",
+          "dest.outer_ip",
+          "geo_ip.city_name",
+          "geo_ip.continent_code",
+          "geo_ip.country_code2",
+          "host",
+          "geo_ip_dns.city_name",
+          "geo_ip_dns.continent_code",
+          "geo_ip_dns.country_code2",
+          "beat.hostname",
+          "dns.answers.algorithm",
+          "dns.answers.data",
+          "dns.answers.class",
+          "dns.answers.labels",
+          "dns.question.etld_plus_one",
+          "dns.question.name",
+          "dns.question.type",
+          "http.response.params",
+          "http.request.params",
+          "http.request.body",
+          "icmp.request.message",
+          "icmp.response.message",
+          "real_ip",
+          "source.ip",
+          "source.mac",
+          "sub_domain",
+          "type",
+          "tags",
+          "params",
+          "notes",
+          "method",
+          "request",
+          "response",
+          "server"
+      ]
+    }
+  },
+  "mappings": {
+    "doc": {
+      "_meta": {
+        "version": "6.0.0"
+      },
+      "dynamic_templates": [
+        {
+          "strings_as_keyword": {
+            "match_mapping_type": "string",
+            "mapping": {
+              "ignore_above": 1024,
+              "copy_to": "_all_",
+              "type": "keyword"
+            }
+          }
+        },
+        {
+          "all_fields": {
+            "match": "*",
+            "mapping": {
+              "copy_to": "_all_"
+            }
+          }
+        }
+      ],
+      "properties": {
+        "@timestamp": {
+          "type": "date"
+        },
+        "@version": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "beat": {
+          "properties": {
+            "hostname": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "name": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "version": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            }
+          }
+        },
+        "bytes_in": {
+          "copy_to": "_all_",
+          "type": "long"
+        },
+        "bytes_out": {
+          "copy_to": "_all_",
+          "type": "long"
+        },
+        "client_geoip": {
+          "properties": {
+            "location": {
+              "type": "geo_point"
+            }
+          }
+        },
+        "client_ip": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "client_location": {
+          "type": "geo_point"
+        },
+        "client_port": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "client_proc": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "client_server": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "client_service": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "connection_id": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "connecttime": {
+          "copy_to": "_all_",
+          "type": "long"
+        },
+        "cpu_time": {
+          "copy_to": "_all_",
+          "type": "long"
+        },
+        "data_source": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "dest": {
+          "properties": {
+            "ip": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "ip_location": {
+              "type": "geo_point"
+            },
+            "ipv6": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "ipv6_location": {
+              "type": "geo_point"
+            },
+            "mac": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "outer_ip": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "outer_ip_location": {
+              "type": "geo_point"
+            },
+            "outer_ipv6": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "outer_ipv6_location": {
+              "type": "geo_point"
+            },
+            "port": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "stats": {
+              "properties": {
+                "net_bytes_total": {
+                  "copy_to": "_all_",
+                  "type": "long"
+                },
+                "net_packets_total": {
+                  "copy_to": "_all_",
+                  "type": "long"
+                }
+              }
+            }
+          }
+        },
+        "direction": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "dns": {
+          "properties": {
+            "additionals": {
+              "properties": {
+                "class": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "data": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "name": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "ttl": {
+                  "copy_to": "_all_",
+                  "type": "long"
+                },
+                "type": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                }
+              }
+            },
+            "additionals_count": {
+              "copy_to": "_all_",
+              "type": "long"
+            },
+            "answers": {
+              "properties": {
+                "algorithm": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "class": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "data": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "expiration": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "inception": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "key_tag": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "labels": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "name": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "original_ttl": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "signer_name": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "ttl": {
+                  "copy_to": "_all_",
+                  "type": "long"
+                },
+                "type": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "type_covered": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                }
+              }
+            },
+            "answers_count": {
+              "copy_to": "_all_",
+              "type": "long"
+            },
+            "authorities": {
+              "properties": {
+                "class": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "data": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "expire": {
+                  "copy_to": "_all_",
+                  "type": "long"
+                },
+                "minimum": {
+                  "copy_to": "_all_",
+                  "type": "long"
+                },
+                "name": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "refresh": {
+                  "copy_to": "_all_",
+                  "type": "long"
+                },
+                "retry": {
+                  "copy_to": "_all_",
+                  "type": "long"
+                },
+                "rname": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "serial": {
+                  "copy_to": "_all_",
+                  "type": "long"
+                },
+                "ttl": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "type": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                }
+              }
+            },
+            "authorities_count": {
+              "copy_to": "_all_",
+              "type": "long"
+            },
+            "flags": {
+              "properties": {
+                "authentic_data": {
+                  "copy_to": "_all_",
+                  "type": "boolean"
+                },
+                "authoritative": {
+                  "copy_to": "_all_",
+                  "type": "boolean"
+                },
+                "checking_disabled": {
+                  "copy_to": "_all_",
+                  "type": "boolean"
+                },
+                "recursion_available": {
+                  "copy_to": "_all_",
+                  "type": "boolean"
+                },
+                "recursion_desired": {
+                  "copy_to": "_all_",
+                  "type": "boolean"
+                },
+                "truncated_response": {
+                  "copy_to": "_all_",
+                  "type": "boolean"
+                }
+              }
+            },
+            "id": {
+              "copy_to": "_all_",
+              "type": "long"
+            },
+            "op_code": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "opt": {
+              "properties": {
+                "do": {
+                  "copy_to": "_all_",
+                  "type": "boolean"
+                },
+                "ext_rcode": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "udp_size": {
+                  "copy_to": "_all_",
+                  "type": "long"
+                },
+                "version": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                }
+              }
+            },
+            "question": {
+              "properties": {
+                "class": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "etld_plus_one": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "name": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "type": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                }
+              }
+            },
+            "response_code": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            }
+          }
+        },
+        "dns_ips": {
+          "type": "ip"
+        },
+        "dnstime": {
+          "copy_to": "_all_",
+          "type": "long"
+        },
+        "domain": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "domloadtime": {
+          "copy_to": "_all_",
+          "type": "long"
+        },
+        "final": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "flow_id": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "geo_ip": {
+          "properties": {
+            "city_name": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "continent_code": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "country_code2": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "country_code3": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "country_name": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "dma_code": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "ip": {
+              "type": "ip"
+            },
+            "latitude": {
+              "type": "half_float"
+            },
+            "location": {
+              "type": "geo_point"
+            },
+            "longitude": {
+              "type": "half_float"
+            },
+            "postal_code": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "region_code": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "region_name": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "timezone": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            }
+          }
+        },
+        "geo_ip_dns": {
+          "properties": {
+            "city_name": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "continent_code": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "country_code2": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "country_code3": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "country_name": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "dma_code": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "domain": {
+              "copy_to": "_all_",
+              "type": "keyword"
+            },
+            "ip": {
+              "type": "ip"
+            },
+            "latitude": {
+              "type": "half_float"
+            },
+            "location": {
+              "type": "geo_point"
+            },
+            "longitude": {
+              "type": "half_float"
+            },
+            "postal_code": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "region_code": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "region_name": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "sub_domain": {
+              "copy_to": "_all_",
+              "type": "keyword"
+            },
+            "timezone": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            }
+          }
+        },
+        "geoip": {
+          "properties": {
+            "city_name": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "continent_code": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "country_code2": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "country_code3": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "country_name": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "dma_code": {
+              "copy_to": "_all_",
+              "type": "long"
+            },
+            "ip": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "latitude": {
+              "copy_to": "_all_",
+              "type": "float"
+            },
+            "location": {
+              "copy_to": "_all_",
+              "type": "float"
+            },
+            "longitude": {
+              "copy_to": "_all_",
+              "type": "float"
+            },
+            "postal_code": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "region_code": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "region_name": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "timezone": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            }
+          }
+        },
+        "highest_registered_domain": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024,
+          "fields": {
+            "components": {
+              "type": "text",
+              "analyzer": "domain_analyzer"
+            }
+          }
+        },
+        "host": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "http": {
+          "properties": {
+            "request": {
+              "properties": {
+                "body": {
+                  "type": "text",
+                  "copy_to": "_all_",
+                  "norms": false
+                },
+                "headers": {
+                  "properties": {
+                    "accept": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "accept-encoding": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "accept-language": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "access-control-request-headers": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "access-control-request-method": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "authorization": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "blobstore": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "cache-control": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "connection": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "content-length": {
+                      "copy_to": "_all_",
+                      "type": "long"
+                    },
+                    "content-type": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "cookie": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "date": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "dnt": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "fid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "host": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "icloud-dsid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "if-modified-since": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "if-none-match": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "if-range": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "intervention": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "keep-alive": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "origin": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "pe-token": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "pf-hostpage": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "pragma": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "purpose": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "range": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "referer": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "related-request-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "resource-freshness": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "sec-websocket-extensions": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "sec-websocket-key": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "sec-websocket-version": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "sessionid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "soapaction": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "upgrade": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "upgrade-insecure-requests": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "user-agent": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "v": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-date": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-date": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-destination": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-edge-pop": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-expires": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-get-host": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-mmcs-container-size": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-mmcs-dataclass": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-object-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-request-uuid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-signature": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-signature-format": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-store-front": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-try-cache": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-tz": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-uuid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-checksum": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-chrome-uma-enabled": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-client-data": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-client-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cloudkit-container": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cloudkit-zones": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-csrf-token": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-dsid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-gk-region-format": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-hello": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-newrelic-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-playback-session-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-privet-token": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-requested-with": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-spotify-ap-resolve-pod-override": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-verify": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    }
+                  }
+                },
+                "params": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                }
+              }
+            },
+            "response": {
+              "properties": {
+                "body": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "code": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "headers": {
+                  "properties": {
+                    "    xdqonalp": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "    xkkozalp": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "    xumotalc": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "accept-range": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "accept-ranges": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "access-allow-origin": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "access-control-allow-credentials": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "access-control-allow-headers": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "access-control-allow-method": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "access-control-allow-methods": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "access-control-allow-origin": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "access-control-expose-headers": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "access-control-max-age": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "access-control-request-header": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "access-control-request-headers": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "access-control-request-method": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "age": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "allow": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "alt-svc": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "an-x-request-uuid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "anserver": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "api-version": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "apple-originating-system": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "apple-seq": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "apple-timing-app": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "apple-tk": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "arr-disable-session-affinity": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "async": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "backend-ip": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "bk-server": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "bk-time-debug": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "cache-control": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "cdnuuid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "cf-bgj": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "cf-cache-status": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "cf-polished": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "cf-railgun": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "cf-ray": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "cf4age": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "cf4ttl": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "cid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "cneonction": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "comscore": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "connection": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "content-disposition": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "content-encoding": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "content-language": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "content-length": {
+                      "copy_to": "_all_",
+                      "type": "long"
+                    },
+                    "content-location": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "content-md5": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "content-range": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "content-security-policy": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "content-size": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "content-transfer-encoding": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "content-type": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "continue": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "cta-rendering-engine": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "cteonnt-length": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "cw-loop": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "cw-server": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "cwdl": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "date": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "dc": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "dcs": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "disposition": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "dnt": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "edge-control": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "engine": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "epke-alive": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "etag": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "expires": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "f": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "facebook-api-version": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "fastly-debug-digest": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "fastly-restarts": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "follow-only-when-prerender-shown": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "fromcache": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "frontend-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "google-creative-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "google-lineitem-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "google-mediationgroup-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "gsresponse": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "host": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "id-de-jean": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "keep-alive": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "kp-eealive": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "last-modified": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "lb_id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "link": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "ljt_error": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "location": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "microsoftsharepointteamservices": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "mime-version": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "mn": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "nncoection": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "now": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "ntcoent-length": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "ooyala-request-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "ooyala-server-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "origin": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "p3p": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "performfeeds-_pgnm": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "performfeeds-hits": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "pragma": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "proxy-connection": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "public-extension": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "request-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "request-time": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "requestid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "resourcetag": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "retry-after": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "routing-server-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "rtss": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "s": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "sec-websocket-accept": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "servedby": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "server": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "server_id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "serverid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "servershortname": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "set-cookie": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "source-age": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "sprequestguid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "status": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "stid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "strict-transport-security": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "surrogate-key": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "surrogate-keys": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "tcn": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "thisttl": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "timing-allow-origin": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "tracking_id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "trackingid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "traffic-path": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "transfer-encoding": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "true-source-ip": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "txid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "uip-response-status": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "upgrade": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "url": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "uuid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "uuidv4": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "vanity-host": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "vary": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "via": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "vipqos": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "warning": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "wn": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ac": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-acc": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-accel-version": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-accountid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-activity-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-activityid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-actual-url": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-adobe-loc": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-age": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-agile-brick-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-agile-checksum": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-agile-request-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-agile-source": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ah-environment": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-akamai-mashable-country": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-akamai-note": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-akamai-pragma-client-ip": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-akamai-session-info": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-akamai-transformed": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-cf-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-error-code": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-error-detail-key": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-error-message": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-expiration": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-id-2": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-ir-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-meta-cache-control": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-meta-cb-modifiedtime": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-meta-content-type": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-meta-content_md5": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-meta-group": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-meta-jets3t-compression": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-meta-md5-hash": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-meta-mode": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-meta-owner": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-meta-permissions": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-meta-put-by-correlation-key": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-meta-repo-checksum": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-meta-revision": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-meta-s3cmd-attrs": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-meta-s3fox-filesize": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-meta-s3fox-modifiedtime": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-meta-size-reduced": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-meta-syncfilehash": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-meta-uploader": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-replication-status": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-request-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-server-side-encryption": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-storage-class": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-amz-version-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-aorta-host": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-aorta-region": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-app-cache": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-application-instance": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-application-site": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-ats-cache-key": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-edge-info": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-jingle-correlation-key": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-max-age": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-ms-content-length": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-orig-url": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-partner": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-request-store-front": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-request-uuid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-splunk-hint": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-apple-translated-wo-url": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-application-context": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-appversion": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-as": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-aspnet-version": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-aspnetmvc-version": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-az": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-backend": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-backend-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-backend-response-time": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-backend-url": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-bc-client-ip": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-bc-connecting-ip": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-beluga-cache-status": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-beluga-node": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-beluga-record": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-beluga-response-time": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-beluga-status": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-beluga-trace": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-bobbytables": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-boldcenter-pageviewid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-boldcenter-visitid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-bt-requestid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-bytes-saved": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-c": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cache": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cache-action": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cache-age": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cache-config": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cache-group": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cache-hit": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cache-hits": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cache-location": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cache-lookup": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cache-nhit": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cache-origin": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cache-remote": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cache-rule": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cache-status": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cache-tax-location": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cacheable": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cdn": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cdn-backend": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cdn-client-ip-version": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cf1": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cf2": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cf3": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cff": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cfhash": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-check-cacheable": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ci-rtid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-clacks-overhead": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cld-error": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cloud-trace-context": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cms-cdninvalkey": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cnection": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-config-source": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-connection-hash": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-content-security-policy": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-content-type-options": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-core-mission": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-country": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-creative-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-cs-request-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-database-date": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-datacenter": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-debug": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-debug-age": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-debug-hits": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-debug-ttl": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-deployment": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-device": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-digest": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-distribution": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-dns-prefetch-control": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-do-esi": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-drupal-cache": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ec-geohdr": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-edgeconnect-midmile-rtt": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-edgeconnect-origin-mex-latency": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-edgeconnect_guid_debug": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-error": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-esg-vh": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-fastcgi-cache": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-fastly-request-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-fastly-stale": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-fastly-ttl": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-fb-content-md5": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-fb-debug": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-fb-rev": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-fb-trace-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-fe": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-feed-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-feserver": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-fetch-date": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-forwarded-for": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-foxnews-edgettl": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-frame-options": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-from": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-function": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-fw-power-by": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-generator": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-github-request-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-go-health": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-go-server": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-goog-generation": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-goog-hash": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-goog-metageneration": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-goog-storage-class": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-goog-stored-content-encoding": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-goog-stored-content-length": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-guploader-uploadid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-h": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-hacker": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-handled-by": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-hco-pid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-height": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-hello-human": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-hiberniacdn": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-host": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-hostname": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-hs-content-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-hw": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-icloud-availability": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-icloud-versionid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ignore-cookie": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-iinfo": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-image-server-cost-estimate": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-image-server-cost-real": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-image-server-fetch-estimate": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-image-server-fetch-real": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-image-server-original-size": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-image-server-pixels-estimate": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-image-server-pixels-real": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-index-last-modified": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-info": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-instance": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-instart-request-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-jare-revision": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-jare-target": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-jare-usage": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-jobs": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-jsonp": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-lat": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-lb-nocache": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-legacyproxy": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-li-fabric": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-li-pop": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-li-uuid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-loadbalancer": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-mainprofilecategory": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-mainprofileid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-mainprofilename": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-mainprofileurl": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-memcached": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-mii-info": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-mm-host": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-mnet-h": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-mnet-hl2": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-mnet-hl3": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-mod-pagespeed": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ms-blob-type": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ms-invokeapp": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ms-lease-status": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ms-meta-cbmodifiedtime": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ms-request-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ms-version": {
+                      "type": "date"
+                    },
+                    "x-msedge-ref": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-n": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-nananana": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-nc": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ndn-redirect-proxy": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-newrelic-app-data": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-news-cache-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-news-data-centre": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-nginx-proxy": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-node": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-nodeid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-object-meta-cb-modifiedtime": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-oc-service-type": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ocsp-reponder-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ooyala-server-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-oracle-dms-ecid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-origin-route": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-original-content-length": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-original-request": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pad": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pal-host": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pardot-lb": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pardot-route": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pardot-rsp": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pass-why": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-passed-to": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-passed-to-beforedispatch": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-passed-to-dll": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-passed-to-postprocessresponse": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pb-device": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pb-embed-param-comments": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pb-embed-param-info": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pb-embed-param-recommend": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pb-embed-param-shares": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pb-embed-param-social": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pb-facebookbot": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pb-fbia": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pb-feed": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pb-mii": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pb-mobileapp": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pb-partner": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pb-xff": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pbl": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-permitted-cross-domain-policies": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pingback": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pinterest-rid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-powered-by": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-powered-cms": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-prefix": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-presslabs-cache": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-proc-data": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-processesi": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-proxy-cache": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-proxy-origin": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pt": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-pubstack": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-px": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-qm-loadbalancer": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-qm3-debug-cache": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-quota-remaining": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-quota-used": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-rate-limit-limit": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-rate-limit-remaining": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-rate-limit-reset": {
+                      "type": "date"
+                    },
+                    "x-ratelimit-limit": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ratelimit-remaining": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ratelimit-reset": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-realserver-nx": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-region": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-removedcookies": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-request-backend": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-request-guid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-request-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-request-time": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-requestid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-responding-instance": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-responding-server": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-response-time": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-restarts": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-returned-from": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-returned-from-beforedispatch": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-returned-from-dll": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-returned-from-postprocessresponse": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-reuse-index": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-rev": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-robots-tag": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-rphost": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-rtmpt-max-pipelined-requests": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-runtime": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-s1": {
+                      "type": "date"
+                    },
+                    "x-s2": {
+                      "type": "date"
+                    },
+                    "x-sailthru-server": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-serial": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-served-by": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-served-from": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-served-from-cache": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-servedbyhost": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-server": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-server-cache": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-server-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-server-name": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-serverid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-servername": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-service": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-sharepointhealthscore": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-smrt-d": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-smrt-i": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-source": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-source-length": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-sovrn-pod": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-span-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-spotx-timing-page": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-spotx-timing-page-context": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-spotx-timing-page-cookie": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-spotx-timing-page-exception": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-spotx-timing-page-misc": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-spotx-timing-page-mux": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-spotx-timing-page-require": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-spotx-timing-page-uri": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-spotx-timing-spotmarket": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-spotx-timing-spotmarket-primary": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-spotx-timing-spotmarket-secondary": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-spotx-timing-transform": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-srv-by": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-stale": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-sticky-vk": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-surge-debug": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-surrogate-key": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-svr-by": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-tag": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-takes-millis": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-takes-tkproxy": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-takes-version": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-tb": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-thinglink-cached": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-thumbnailer": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-tid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-time": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-timer": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-timestamp": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-tout-analytics-session-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-tr-cached": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-tr-ttl": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-trace-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-traceid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-trans-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-transaction": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-tremorvideo-status": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ttl": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-twitter-response-tags": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-tx-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-type": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ua-compatible": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ua-device": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ua-profile": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ulver": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-upstream": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-user-agent": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-uuid": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-varnish": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-varnish-beresp-grace": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-varnish-beresp-status": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-varnish-beresp-ttl": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-varnish-cache": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-varnish-host": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-varnish-ip": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-vdbg": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-vdna-request-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-vemba-format": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-vemba-modified": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-version": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-via": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-via-fastly": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-webkit-csp": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-webobjects-loadaverage": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-why": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-widget-server": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-width": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-wp-total": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-wp-totalpages": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-xss-protection": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ystatus": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ysws-request-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "x-ysws-visited-replicas": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "xo-id": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "xserver": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "y-trace": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "ymrmhdr": {
+                      "copy_to": "_all_",
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    }
+                  }
+                },
+                "phrase": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                }
+              }
+            }
+          }
+        },
+        "icmp": {
+          "properties": {
+            "request": {
+              "properties": {
+                "code": {
+                  "copy_to": "_all_",
+                  "type": "long"
+                },
+                "message": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "type": {
+                  "copy_to": "_all_",
+                  "type": "long"
+                }
+              }
+            },
+            "response": {
+              "properties": {
+                "code": {
+                  "copy_to": "_all_",
+                  "type": "long"
+                },
+                "message": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "type": {
+                  "copy_to": "_all_",
+                  "type": "long"
+                }
+              }
+            },
+            "version": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            }
+          }
+        },
+        "icmp_id": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "ip": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "last_time": {
+          "type": "date"
+        },
+        "loadtime": {
+          "copy_to": "_all_",
+          "type": "long"
+        },
+        "meta": {
+          "properties": {
+            "cloud": {
+              "properties": {
+                "availability_zone": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "instance_id": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "machine_type": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "project_id": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "provider": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "region": {
+                  "copy_to": "_all_",
+                  "type": "keyword",
+                  "ignore_above": 1024
+                }
+              }
+            }
+          }
+        },
+        "method": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "notes": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "outer_vlan": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "params": {
+          "type": "text",
+          "copy_to": "_all_",
+          "norms": false
+        },
+        "path": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "port": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "proc": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "query": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "real_ip": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "release": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "request": {
+          "type": "text",
+          "copy_to": "_all_",
+          "norms": false
+        },
+        "resource": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "response": {
+          "type": "text",
+          "copy_to": "_all_",
+          "norms": false
+        },
+        "responsetime": {
+          "copy_to": "_all_",
+          "type": "long"
+        },
+        "server": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "service": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "source": {
+          "properties": {
+            "host": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "ip": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "ip_location": {
+              "type": "geo_point"
+            },
+            "ipv6": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "ipv6_location": {
+              "type": "geo_point"
+            },
+            "mac": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "outer_ip": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "outer_ip_location": {
+              "type": "geo_point"
+            },
+            "outer_ipv6": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "outer_ipv6_location": {
+              "type": "geo_point"
+            },
+            "port": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "stats": {
+              "properties": {
+                "net_bytes_total": {
+                  "copy_to": "_all_",
+                  "type": "long"
+                },
+                "net_packets_total": {
+                  "copy_to": "_all_",
+                  "type": "long"
+                }
+              }
+            }
+          }
+        },
+        "start_time": {
+          "type": "date"
+        },
+        "status": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "sub_domain": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "subdomain": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "tags": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "threat": {
+          "properties": {
+            "attack_phase": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "comment": {
+              "type": "text",
+              "copy_to": "_all_",
+              "fields": {
+                "raw": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                }
+              }
+            },
+            "description": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "handling": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "indicator_value": {
+              "type": "ip"
+            },
+            "match": {
+              "copy_to": "_all_",
+              "type": "boolean"
+            },
+            "observated_date": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "observed_date": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "role": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "type": {
+              "copy_to": "_all_",
+              "type": "keyword",
+              "ignore_above": 1024
+            }
+          }
+        },
+        "transport": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "type": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "vlan": {
+          "copy_to": "_all_",
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "_all_": {
+          "type": "text",
+          "analyzer": "my_http_analyzer"
+        }
+      }
+    }
+  }
+}
